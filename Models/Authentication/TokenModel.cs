@@ -2,7 +2,7 @@
 {
     public class TokenModel
     {
-        public string JWT { get; set; }
-        public DateTime JWTExpirationDate { get; set; }
+        public string Token { get; set; }
+        public DateTime TokenExpirationDate { get; set; }
     }
 }

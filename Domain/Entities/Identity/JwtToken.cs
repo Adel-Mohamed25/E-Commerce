@@ -15,7 +15,7 @@ namespace Domain.Entities.Identity
         public string IPAddress { get; set; }
 
         public bool IsRefreshTokenExpired => DateTime.UtcNow >= RefreshTokenExpirationDate;
-        public bool IsRefreshJWTActive => RefreshTokenRevokedDate == null && !IsRefreshTokenExpired;
+        public bool IsRefreshTokenActive => RefreshTokenRevokedDate == null && !IsRefreshTokenExpired;
 
         [ForeignKey(nameof(UserId))]
         [InverseProperty(nameof(User.JwtTokens))]

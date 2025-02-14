@@ -50,7 +50,10 @@ namespace Infrastructure.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IJwtTokenRepository, JwtTokenRepository>();
             services.AddScoped<IRedisCacheService, RedisCacheService>();
+
 
             services.Configure<EmailSettings>(configuration.GetSection("EmailSttings"));
             services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));

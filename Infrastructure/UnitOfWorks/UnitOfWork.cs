@@ -15,16 +15,22 @@ namespace Infrastructure.UnitOfWorks
 
         public ICategoryRepository Categories { get; private set; }
         public IUserRepository Users { get; private set; }
+        public IRoleRepository Roles { get; private set; }
+        public IJwtTokenRepository JwtTokens { get; private set; }
 
         public UnitOfWork(IApplicationDbContext context,
             ILogger<UnitOfWork> logger,
             ICategoryRepository categories,
-            IUserRepository users)
+            IUserRepository users,
+            IRoleRepository roles,
+            IJwtTokenRepository jwtTokens)
         {
             _context = context;
             _logger = logger;
             Categories = categories;
             Users = users;
+            Roles = roles;
+            JwtTokens = jwtTokens;
         }
 
         public async ValueTask DisposeAsync()
@@ -32,7 +38,7 @@ namespace Infrastructure.UnitOfWorks
             await _context.DisposeAsync();
         }
 
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             try
             {

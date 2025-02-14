@@ -3,6 +3,6 @@
     public class RefreshTokenModel
     {
         public string RefreshToken { get; set; }
-        public DateTime RefreshJWTExpirationDate { get; set; }
+        public DateTime RefreshTokenExpirationDate { get; set; }
     }
 }
