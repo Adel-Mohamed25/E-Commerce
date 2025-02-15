@@ -5,15 +5,15 @@ namespace Services.UnitOfServices
 {
     public class UnitOfService : IUnitOfService
     {
-        public IAuthenticationServices AuthenticationServices { get; private set; }
+        public IAuthServices AuthServices { get; private set; }
 
         public IEmailServices EmailServices { get; private set; }
 
         public UnitOfService(
-            IAuthenticationServices authenticationServices,
+            IAuthServices authServices,
             IEmailServices emailServices)
         {
-            AuthenticationServices = authenticationServices;
+            AuthServices = authServices;
             EmailServices = emailServices;
         }
     }

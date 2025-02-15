@@ -4,11 +4,11 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace Services.IServices
 {
-    public interface IAuthenticationServices
+    public interface IAuthServices
     {
         Func<string, JwtSecurityToken, Task<bool>> IsTokenValid { get; }
         Task<AuthModel> GetTokenAsync(User user);
         Task<JwtSecurityToken> ReadTokenAsync(string jwt);
-        Task<AuthModel> RefreshTokenAsync(User user);
+        Task<AuthModel> GetRefreshTokenAsync(User user);
     }
 }

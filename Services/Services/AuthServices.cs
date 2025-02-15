@@ -1,6 +1,7 @@
 ﻿using Domain.Entities.Identity;
 using Infrastructure.Settings;
 using Infrastructure.UnitOfWorks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models.Authentication;
@@ -12,7 +13,7 @@ using System.Text;
 
 namespace Services.Services
 {
-    public class AuthenticationService : IAuthenticationServices
+    public class AuthenticationService : IAuthServices
     {
         private readonly JWTSettings _jWTSettings;
         private readonly IUnitOfWork _unitOfWork;
@@ -22,6 +23,35 @@ namespace Services.Services
             _jWTSettings = options.Value;
             _unitOfWork = unitOfWork;
         }
+
+
+        Task<bool> IsTokenParametersValidAsync(string jwt)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jWTSettings.Secret));
+            var parameters = new TokenValidationParameters
+            {
+                ValidateIssuer = _jWTSettings.ValidateIssuer,
+                ValidIssuers = new[] { _jWTSettings.Issuer },
+                ValidateIssuerSigningKey = _jWTSettings.ValidateIssuerSigningKey,
+                IssuerSigningKey = key,
+                ValidAudience = _jWTSettings.Audience,
+                ValidateAudience = _jWTSettings.ValidateAudience,
+                ValidateLifetime = _jWTSettings.ValidateLifeTime,
+            };
+            try
+            {
+                var validator = handler.ValidateToken(jwt, parameters, out SecurityToken validatedToken);
+                return Task.FromResult(validatedToken != null);
+            }
+            catch
+            {
+                return Task.FromResult(false);
+            }
+        }
+
+        Task<bool> IsTokenAlgorithmValidAsync(JwtSecurityToken jwtSecurityToken) =>
+            Task.FromResult(jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature));
 
         public Func<string, JwtSecurityToken, Task<bool>> IsTokenValid
          => async (jwt, jwtSecurityToken) =>
@@ -50,17 +80,17 @@ namespace Services.Services
             }
             else
             {
-                var accessToken = await GenerateTokenAsync(user, GetClaimsAsync);
+                var token = await GenerateTokenAsync(user, GetClaimsAsync);
 
-                var refreshTokenModel = GetRefreshToken();
+                var refreshToken = GenerateRefreshToken();
 
                 var JwtToken = new JwtToken
                 {
-                    Token = accessToken,
-                    RefreshToken = refreshTokenModel.RefreshToken,
+                    Token = token,
+                    RefreshToken = refreshToken.RefreshToken,
                     IsRefreshTokenUsed = true,
                     UserId = user.Id,
-                    TokenExpirationDate = DateTime.UtcNow.AddDays(_jWTSettings.AccessTokenExpireDate),
+                    TokenExpirationDate = DateTime.UtcNow.AddHours(_jWTSettings.AccessTokenExpireDate),
                     RefreshTokenExpirationDate = DateTime.UtcNow.AddDays(_jWTSettings.RefreshTokenExpireDate),
                 };
 
@@ -68,14 +98,9 @@ namespace Services.Services
                 try
                 {
                     await _unitOfWork.JwtTokens.CreateAsync(JwtToken);
-                    //await _unitOfWork.Users.UpdateAsync(user);
-                    //var identityResult = await _unitOfWork.Users.Manager.UpdateAsync(user);
-
                     await _unitOfWork.SaveChangesAsync();
                     await trasaction.CommitAsync();
 
-                    //if (!identityResult.Succeeded)
-                    //    return new AuthenticationModel();
                 }
                 catch
                 {
@@ -97,50 +122,43 @@ namespace Services.Services
             return authModel;
         }
 
-        private RefreshTokenModel GetRefreshToken()
+        private RefreshTokenModel GenerateRefreshToken()
         {
+            var newRefreshToken = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(Guid.NewGuid().ToString())));
             var refreshToken = new RefreshTokenModel
             {
-                RefreshToken = GenerateRefreshToken(),
-                RefreshTokenExpirationDate = DateTime.UtcNow.AddDays(_jWTSettings.RefreshTokenExpireDate),
+                RefreshToken = newRefreshToken,
+                RefreshTokenExpirationDate = DateTime.UtcNow.AddHours(_jWTSettings.RefreshTokenExpireDate),
             };
             return refreshToken;
         }
 
-        private string GenerateRefreshToken()
+        private async Task<string> GenerateTokenAsync(User user, Func<User, Task<List<Claim>>> Claims)
         {
-            var randomNumber = new byte[64];
-            var randomNumberGenerate = RandomNumberGenerator.Create();
-            randomNumberGenerate.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
-        }
+            var claims = await Claims.Invoke(user);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jWTSettings.Secret));
+            var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+            var jwtToken = new JwtSecurityToken(
 
-        private async Task<string> GenerateTokenAsync(User user, Func<User, Task<List<Claim>>> getClaims)
-        {
-            var claims = await getClaims.Invoke(user);
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jWTSettings.Secret));
-            var jwtToken =
-                  new JwtSecurityToken(
-                  issuer: _jWTSettings.Issuer,
-                  audience: _jWTSettings.Audience,
-                  claims: claims,
-                  expires: DateTime.UtcNow.AddDays(_jWTSettings.AccessTokenExpireDate),
-                  signingCredentials: new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature));
+                issuer: _jWTSettings.Issuer,
+                audience: _jWTSettings.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(_jWTSettings.AccessTokenExpireDate),
+                signingCredentials: signingCredentials
+                );
             var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
             return accessToken;
         }
+
 
         private async Task<List<Claim>> GetClaimsAsync(User user)
         {
             var userRolesNames = await _unitOfWork.Users.UserManager.GetRolesAsync(user);
             var userClaims = await _unitOfWork.Users.UserManager.GetClaimsAsync(user);
 
-            #region Get Permissions
+            var userRoles = (await _unitOfWork.Roles.GetAllAsync(r => userRolesNames.Contains(r.Name ?? "Not Found"))).ToList();
 
-            // get user roles
-            var userRoles = (await _unitOfWork.Roles.GetAllAsync(r => userRolesNames.Contains(r.Name))).ToList();
-            // get role claims
             var permissions = new List<Claim>();
             foreach (var role in userRoles)
             {
@@ -148,12 +166,13 @@ namespace Services.Services
                 permissions.AddRange(roleClams);
             }
 
-            #endregion
 
             var claims = new List<Claim>()
             {
+                new Claim (JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),
                 new (ClaimTypes.PrimarySid, user.Id),
-                new (ClaimTypes.Name,user.UserName),
+                new (ClaimTypes.Name,user.FirstName),
+                new (ClaimTypes.Name,user.LastName),
                 new (ClaimTypes.Email,user.Email),
                 new (ClaimTypes.MobilePhone, user.PhoneNumber),
             };
@@ -177,67 +196,41 @@ namespace Services.Services
             return Task.FromResult(new JwtSecurityTokenHandler().ReadJwtToken(jwt));
         }
 
-        Task<bool> IsTokenParametersValidAsync(string jwt)
+        private async Task<bool> UpdateUserTokensAsync(User user)
         {
-            var handler = new JwtSecurityTokenHandler();
-            var parameters = new TokenValidationParameters
-            {
-                ValidateIssuer = _jWTSettings.ValidateIssuer,
-                ValidIssuers = new[] { _jWTSettings.Issuer },
-                ValidateIssuerSigningKey = _jWTSettings.ValidateIssuerSigningKey,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jWTSettings.Secret)),
-                ValidAudience = _jWTSettings.Audience,
-                ValidateAudience = _jWTSettings.ValidateAudience,
-                ValidateLifetime = _jWTSettings.ValidateLifeTime,
-            };
-            try
-            {
-                var validator = handler.ValidateToken(jwt, parameters, out SecurityToken validatedToken);
-
-                if (validatedToken == null)
-                    return Task.FromResult(false);
-            }
-            catch
-            {
-                return Task.FromResult(false);
-            }
-            return Task.FromResult(true);
+            IdentityResult result = await _unitOfWork.Users.UserManager.UpdateAsync(user);
+            return result.Succeeded;
         }
 
-        async Task<bool> IsTokenAlgorithmValidAsync(JwtSecurityToken jwtSecurityToken) =>
-            await Task.FromResult(jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature));
-
-        public async Task<AuthModel> RefreshTokenAsync(User user)
+        public async Task<AuthModel> GetRefreshTokenAsync(User user)
         {
-            var JwtToken = user.JwtTokens.FirstOrDefault(u => u.IsRefreshTokenActive);
-
-            if (JwtToken is null)
+            var jwtToken = user.JwtTokens.FirstOrDefault(u => u.IsRefreshTokenActive);
+            if (jwtToken is null)
                 return null;
 
-            // revoke refresh Token
-            JwtToken.RefreshTokenRevokedDate = DateTime.UtcNow;
+            jwtToken.RefreshTokenRevokedDate = DateTime.UtcNow;
 
-            var jwt = await GenerateTokenAsync(user, GetClaimsAsync);
-            var refreshToken = GenerateRefreshToken();
+            var newToken = await GenerateTokenAsync(user, GetClaimsAsync);
+            var newRefreshToken = GenerateRefreshToken().RefreshToken;
 
-            // add new refresh token to user
-            var newUserToken = new JwtToken()
+            var newUserToken = new JwtToken
             {
                 UserId = user.Id,
-                Token = jwt,
-                TokenExpirationDate = DateTime.UtcNow.AddDays(_jWTSettings.AccessTokenExpireDate),
-                RefreshToken = refreshToken,
+                Token = newToken,
+                TokenExpirationDate = DateTime.UtcNow.AddHours(_jWTSettings.AccessTokenExpireDate),
+                RefreshToken = newRefreshToken,
                 RefreshTokenExpirationDate = DateTime.UtcNow.AddDays(_jWTSettings.RefreshTokenExpireDate),
-                IsRefreshTokenUsed = true,
+                IsRefreshTokenUsed = true
             };
+
             user.JwtTokens.Add(newUserToken);
 
-            var identityResult = await _unitOfWork.Users.UserManager.UpdateAsync(user);
 
-            if (!identityResult.Succeeded)
+            bool isupdated = await UpdateUserTokensAsync(user);
+            if (!isupdated)
                 return null;
 
-            return new AuthModel()
+            return new AuthModel
             {
                 TokenModel = new()
                 {

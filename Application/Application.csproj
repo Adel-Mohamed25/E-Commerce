@@ -10,7 +10,6 @@
     <Folder Include="Features\RoleFeatures\Comands\" />
     <Folder Include="Features\RoleFeatures\Validations\" />
     <Folder Include="Features\RoleFeatures\Queries\" />
-    <Folder Include="Features\UserFeatures\Commands\" />
     <Folder Include="Features\UserFeatures\Validations\" />
     <Folder Include="Features\UserFeatures\Queries\" />
     <Folder Include="Hubs\" />

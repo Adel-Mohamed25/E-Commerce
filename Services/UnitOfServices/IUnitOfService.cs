@@ -4,7 +4,7 @@ namespace Services.UnitOfServices
 {
     public interface IUnitOfService
     {
-        IAuthenticationServices AuthenticationServices { get; }
+        IAuthServices AuthServices { get; }
         IEmailServices EmailServices { get; }
     }
 }

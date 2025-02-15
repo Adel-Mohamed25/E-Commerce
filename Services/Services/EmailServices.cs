@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Settings;
 using Infrastructure.UnitOfWorks;
 using Microsoft.Extensions.Options;
+using Models.Email;
 using Services.IServices;
 
 namespace Services.Services
@@ -15,5 +16,16 @@ namespace Services.Services
             _emailSettings = emailSettings;
             _unitOfWork = unitOfWork;
         }
+
+        public Task<EmailModel> SendEmailAsync(SendEmailModel emailModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ConfirmEmailResponseModel> ConfirmEmailAsync(ConfirmEmailRequestModel emailRequestModel)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

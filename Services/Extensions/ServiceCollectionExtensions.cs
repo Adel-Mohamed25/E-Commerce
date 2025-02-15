@@ -33,6 +33,7 @@ namespace Services.Extensions
                 {
                     ValidateIssuerSigningKey = true,
                     ValidateIssuer = true,
+
                     ValidIssuer = jwtSection.GetValue<string>($"{nameof(JWTSettings.Issuer)}"),
                     ValidateAudience = true,
                     ValidAudience = jwtSection.GetValue<string>($"{nameof(JWTSettings.Audience)}"),
@@ -45,20 +46,20 @@ namespace Services.Extensions
             #endregion
 
             #region Add Google Authentication 
-            services.AddAuthentication().AddGoogle(options =>
-            {
-                options.ClientId = googleSection.GetValue<string>($"{nameof(GoogleSettings.ClientId)}") ?? throw new InvalidOperationException("ClientId is missing");
-                options.ClientSecret = googleSection.GetValue<string>($"{nameof(GoogleSettings.ClientSecret)}") ?? throw new InvalidOperationException("ClientSecret is missing");
-            });
+            //services.AddAuthentication().AddGoogle(options =>
+            //{
+            //    options.ClientId = googleSection.GetValue<string>($"{nameof(GoogleSettings.ClientId)}") ?? throw new InvalidOperationException("ClientId is missing");
+            //    options.ClientSecret = googleSection.GetValue<string>($"{nameof(GoogleSettings.ClientSecret)}") ?? throw new InvalidOperationException("ClientSecret is missing");
+            //});
             #endregion
 
             #region Add Facebook Authentication 
-            services.AddAuthentication().AddFacebook(options =>
-            {
-                options.AppId = facebookSection.GetValue<string>($"{nameof(FacebookSettings.AppId)}") ?? throw new InvalidOperationException("AppId is missing");
-                options.AppId = facebookSection.GetValue<string>($"{nameof(FacebookSettings.AppSecret)}") ?? throw new InvalidOperationException("AppSecret is missing");
-                options.AppSecret = "";
-            });
+            //services.AddAuthentication().AddFacebook(options =>
+            //{
+            //    options.AppId = facebookSection.GetValue<string>($"{nameof(FacebookSettings.AppId)}") ?? throw new InvalidOperationException("AppId is missing");
+            //    options.AppId = facebookSection.GetValue<string>($"{nameof(FacebookSettings.AppSecret)}") ?? throw new InvalidOperationException("AppSecret is missing");
+            //    options.AppSecret = "";
+            //});
             #endregion
 
             #region Configure Swagger with JWT Authentication and able to read version correctly
@@ -96,7 +97,7 @@ namespace Services.Extensions
 
             services.AddScoped<IUnitOfService, UnitOfService>();
             services.AddScoped<IEmailServices, EmailServices>();
-            services.AddScoped<IAuthenticationServices, AuthenticationService>();
+            services.AddScoped<IAuthServices, AuthenticationService>();
 
             return services;
         }
