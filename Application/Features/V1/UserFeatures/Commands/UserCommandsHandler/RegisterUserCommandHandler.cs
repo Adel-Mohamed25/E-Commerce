@@ -31,9 +31,9 @@ namespace Application.Features.V1.UserFeatures.Commands.UserCommandsHandler
         {
             try
             {
-                var user = _mapper.Map<User>(request.PostUserModel);
-                user.UserName = request.PostUserModel.Email;
-                IdentityResult result = await _unitOfWork.Users.UserManager.CreateAsync(user, request.PostUserModel.Password);
+                var user = _mapper.Map<User>(request.CreateUserModel);
+                user.UserName = request.CreateUserModel.Email;
+                IdentityResult result = await _unitOfWork.Users.UserManager.CreateAsync(user, request.CreateUserModel.Password);
                 if (result.Succeeded)
                 {
                     var authModel = await _unitOfService.AuthServices.GetTokenAsync(user);

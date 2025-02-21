@@ -5,5 +5,5 @@ using Models.User;
 
 namespace Application.Features.V1.UserFeatures.Commands.UserCommands
 {
-    public record RegisterUserCommand(CreateUserModel PostUserModel) : IRequest<Response<AuthModel>>;
+    public record RegisterUserCommand(CreateUserModel CreateUserModel) : IRequest<Response<AuthModel>>;
 }

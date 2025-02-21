@@ -23,14 +23,14 @@ namespace Application.Features.V1.CategoryFeatures.Commands.CategoryCommandsHand
         {
             try
             {
-                var data = _mapper.Map<Category>(request.PostCategoryModel);
+                var data = _mapper.Map<Category>(request.CreateCategoryModel);
                 await _unitOfWork.Categories.CreateAsync(data, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                return ResponseHandler.Success(data: request.PostCategoryModel);
+                return ResponseHandler.Success(data: request.CreateCategoryModel);
             }
             catch (Exception)
             {
-                return ResponseHandler.Conflict(data: request.PostCategoryModel);
+                return ResponseHandler.Conflict(data: request.CreateCategoryModel);
             }
 
         }

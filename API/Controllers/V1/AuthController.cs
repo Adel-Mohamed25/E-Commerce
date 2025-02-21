@@ -12,9 +12,9 @@ namespace API.Controllers.V1
     public class AuthController : AppBaseController
     {
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(CreateUserModel postUserModel)
+        public async Task<IActionResult> Register(CreateUserModel createUserModel)
         {
-            return NewResult(await Mediator.Send(new RegisterUserCommand(postUserModel)));
+            return NewResult(await Mediator.Send(new RegisterUserCommand(createUserModel)));
         }
 
 

@@ -27,9 +27,9 @@ namespace API.Controllers.V1
         }
 
         [HttpPost("Post")]
-        public async Task<IActionResult> Post([FromBody] CreateCategoryModel postCategoryModel)
+        public async Task<IActionResult> Post([FromBody] CreateCategoryModel createCategoryModel)
         {
-            return NewResult(await Mediator.Send(new CreateCategoryCommand(postCategoryModel)));
+            return NewResult(await Mediator.Send(new CreateCategoryCommand(createCategoryModel)));
         }
 
         [HttpPut("Put")]
