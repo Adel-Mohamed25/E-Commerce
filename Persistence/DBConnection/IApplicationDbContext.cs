@@ -14,6 +14,8 @@ namespace Persistence.DBConnection
         DbSet<Order> Orders { get; }
         DbSet<Payment> Payments { get; }
         DbSet<User> Users { get; }
+        //DbSet<UserLogin> UserLogins { get; }
+        DbSet<Role> Roles { get; }
         DbSet<Review> Reviews { get; }
         DbSet<CartItem> CartItems { get; }
         DbSet<OrderItem> OrderItems { get; }

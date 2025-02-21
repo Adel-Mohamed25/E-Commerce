@@ -1,15 +1,17 @@
-﻿namespace Domain.Entities
+﻿using Domain.Entities.Comman;
+
+namespace Domain.Entities
 {
     public class FavouriteItem : BaseEntity
     {
-        public string FavoriteProductId { get; set; } = null!;
+        public string FavoriteProductId { get; set; }
 
-        public string ProductId { get; set; } = null!;
+        public string ProductId { get; set; }
 
         public string ProductName { get; set; }
 
-        public virtual FavouriteProduct FavouriteProduct { get; set; } = null!;
+        public virtual FavouriteProduct FavouriteProduct { get; set; }
 
-        public virtual Product Product { get; set; } = null!;
+        public virtual Product Product { get; set; }
     }
 }

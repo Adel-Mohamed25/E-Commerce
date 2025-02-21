@@ -74,7 +74,7 @@ namespace Services.Extensions
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter the token like this: Bearer {your token}",
+                    Description = "Enter your token",
                 });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement

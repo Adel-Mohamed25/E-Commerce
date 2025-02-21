@@ -1,11 +1,12 @@
-﻿using Domain.Entities.Identity;
+﻿using Domain.Entities.Comman;
+using Domain.Entities.Identity;
 using Domain.Enums;
 
 namespace Domain.Entities
 {
     public class Order : BaseEntity
     {
-        public string UserId { get; set; } = null!;
+        public string UserId { get; set; }
         public decimal TotalAmount { get; set; }
         public OrderStatus Status { get; set; }
         public string? ShippingAddress { get; set; }
@@ -14,7 +15,7 @@ namespace Domain.Entities
         public DateTime? DeliveredDate { get; set; }
         public string? TrackingNumber { get; set; }
 
-        public virtual User User { get; set; } = null!;
-        public virtual ICollection<OrderItem> OrderItems { get; set; } = null!;
+        public virtual User User { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

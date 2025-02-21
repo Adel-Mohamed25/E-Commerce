@@ -1,6 +1,6 @@
-﻿using Domain.Entities.Identity;
-using Domain.IRepositories;
-using Domain.IRepositories.IIdentityRepository;
+﻿using Contracts.Contracts;
+using Contracts.Contracts.IIdentityRepository;
+using Domain.Entities.Identity;
 using Infrastructure.Caching;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.IdentityRepository;
@@ -21,7 +21,7 @@ namespace Infrastructure.Extensions
             services.AddDbContext<ApplicationDbContext>(options =>
                      options.UseSqlServer(configuration.GetConnectionString("ECommerceConnection")));
 
-            services.AddIdentity<User, IdentityRole>(options =>
+            services.AddIdentity<User, Role>(options =>
             {
                 options.SignIn.RequireConfirmedEmail = true;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
@@ -52,10 +52,13 @@ namespace Infrastructure.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IJwtTokenRepository, JwtTokenRepository>();
+            services.AddScoped<IUserLoginRepository, UserLoginRepository>();
             services.AddScoped<IRedisCacheService, RedisCacheService>();
+            services.AddScoped<UserManager<User>>();
+            services.AddScoped<SignInManager<User>>();
+            services.AddScoped<RoleManager<Role>>();
 
-
-            services.Configure<EmailSettings>(configuration.GetSection("EmailSttings"));
+            services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
             services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
             services.Configure<GoogleSettings>(configuration.GetSection($"Authentication:{nameof(GoogleSettings)}"));
             services.Configure<FacebookSettings>(configuration.GetSection($"Authentication:{nameof(FacebookSettings)}"));

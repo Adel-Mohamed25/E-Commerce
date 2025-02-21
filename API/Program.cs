@@ -1,6 +1,8 @@
 using Application.Extensions;
 using Application.Middlewares;
 using Infrastructure.Extensions;
+using Infrastructure.Seeders;
+using Infrastructure.UnitOfWorks;
 using Microsoft.AspNetCore.Mvc;
 using Services.Extensions;
 
@@ -14,10 +16,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+
 // AddDependenciesInjection
 builder.Services.AddInfrastructureDependencies(builder.Configuration)
                 .AddApplicationDependencies()
                 .AddServicesDependencies(builder.Configuration);
+
 
 
 
@@ -31,6 +35,19 @@ builder.Services.AddApiVersioning(options =>
 
 var app = builder.Build();
 
+//Data Seeder 
+using var scop = app.Services.CreateScope();
+var services = scop.ServiceProvider;
+var logger = services.GetRequiredService<ILogger<Program>>();
+try
+{
+    var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+    await RoleSeeder.SeedRoleAsync(unitOfWork);
+}
+catch (Exception ex)
+{
+    logger.LogError(ex, "Error occurred while seeding roles");
+}
 
 
 // Configure the HTTP request pipeline.
@@ -41,6 +58,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ErrorHandlingMiddleWare>();
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

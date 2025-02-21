@@ -14,6 +14,12 @@ namespace Persistence.Configurations.Identity
                   .ValueGeneratedOnAdd()
                   .HasDefaultValueSql("NEWID()");
 
+            builder.Property(x => x.DeviceInfo)
+                .IsRequired(false);
+
+            builder.Property(x => x.IPAddress)
+                .IsRequired(false);
+
             builder.HasOne(rf => rf.User)
                 .WithMany(u => u.JwtTokens)
                 .HasForeignKey(u => u.UserId)

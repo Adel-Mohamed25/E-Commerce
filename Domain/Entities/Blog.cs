@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using Domain.Entities.Comman;
+using Domain.Enums;
 
 namespace Domain.Entities
 {

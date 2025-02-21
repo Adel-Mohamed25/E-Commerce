@@ -1,12 +1,13 @@
-﻿using Domain.Entities.Identity;
+﻿using Domain.Entities.Comman;
+using Domain.Entities.Identity;
 using Domain.Enums;
 
 namespace Domain.Entities
 {
     public class Payment : BaseEntity
     {
-        public string OrderId { get; set; } = null!;
-        public string UserId { get; set; } = null!;
+        public string OrderId { get; set; }
+        public string UserId { get; set; }
         public decimal Amount { get; set; }
         public PaymentMethod Method { get; set; }
         public PaymentStatus Status { get; set; }
@@ -15,7 +16,7 @@ namespace Domain.Entities
 
         public string? TransactionId { get; set; }
 
-        public virtual Order Order { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        public virtual Order Order { get; set; }
+        public virtual User User { get; set; }
     }
 }

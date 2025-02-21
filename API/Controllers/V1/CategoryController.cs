@@ -1,5 +1,5 @@
-﻿using Application.Features.CategoryFeatures.Commands.CategoryCommands;
-using Application.Features.CategoryFeatures.Queries.CategoryQueries;
+﻿using Application.Features.V1.CategoryFeatures.Commands.CategoryCommands;
+using Application.Features.V1.CategoryFeatures.Queries.CategoryQueries;
 using Microsoft.AspNetCore.Mvc;
 using Models.Category;
 
@@ -7,6 +7,7 @@ using Models.Category;
 
 namespace API.Controllers.V1
 {
+    //[Authorize]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
@@ -26,15 +27,15 @@ namespace API.Controllers.V1
         }
 
         [HttpPost("Post")]
-        public async Task<IActionResult> Post([FromBody] PostCategoryModel postCategoryModel)
+        public async Task<IActionResult> Post([FromBody] CreateCategoryModel postCategoryModel)
         {
-            return NewResult(await Mediator.Send(new PostCategoryCommand(postCategoryModel)));
+            return NewResult(await Mediator.Send(new CreateCategoryCommand(postCategoryModel)));
         }
 
         [HttpPut("Put")]
         public async Task<IActionResult> Put([FromQuery] string id, [FromBody] CategoryModel categoryModel)
         {
-            return NewResult(await Mediator.Send(new PutCategoryCommand(id, categoryModel)));
+            return NewResult(await Mediator.Send(new UpdateCategoryCommand(id, categoryModel)));
         }
 
         [HttpDelete("Delete")]

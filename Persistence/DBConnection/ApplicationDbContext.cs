@@ -1,13 +1,14 @@
 ﻿using Domain.Entities;
 using Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Persistence.DBConnection
 {
-    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<string>, string>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<User,
+        Role, string>,
+       IApplicationDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -20,6 +21,8 @@ namespace Persistence.DBConnection
         public DbSet<Order> Orders { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<User> Users { get; set; }
+        //public DbSet<UserLogin> UserLogins { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Domain.Entities.Comman;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.Identity
 {
@@ -11,8 +12,8 @@ namespace Domain.Entities.Identity
         public DateTime RefreshTokenExpirationDate { get; set; }
         public DateTime? RefreshTokenRevokedDate { get; set; }
         public bool IsRefreshTokenUsed { get; set; }
-        public string DeviceInfo { get; set; }
-        public string IPAddress { get; set; }
+        public string? DeviceInfo { get; set; }
+        public string? IPAddress { get; set; }
 
         public bool IsRefreshTokenExpired => DateTime.UtcNow >= RefreshTokenExpirationDate;
         public bool IsRefreshTokenActive => RefreshTokenRevokedDate == null && !IsRefreshTokenExpired;

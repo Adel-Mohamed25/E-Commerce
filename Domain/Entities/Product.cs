@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities
+﻿using Domain.Entities.Comman;
+
+namespace Domain.Entities
 {
     public class Product : BaseEntity
     {
@@ -21,13 +23,13 @@
         public string ShippingWeight { get; set; }
         public decimal ShippingCost { get; set; }
         public int Rating { get; set; }
-        public List<Review> ReviewsList { get; set; } = null!;
+        public List<Review> ReviewsList { get; set; } = new List<Review>();
         public int NumberOfStarts { get; set; }
         public string CategoryId { get; set; }
-        public Category Category { get; set; } = null!;
-        public List<CartItem> CartItemsList { get; set; } = null!;
-        public List<FavouriteItem> FavouriteItems { get; set; } = null!;
-        public List<OrderItem> OrderItemsList { get; set; } = null!;
+        public Category Category { get; set; }
+        public List<CartItem> CartItemsList { get; set; } = new List<CartItem>();
+        public List<FavouriteItem> FavouriteItems { get; set; } = new List<FavouriteItem>();
+        public List<OrderItem> OrderItemsList { get; set; } = new List<OrderItem>();
 
     }
 }

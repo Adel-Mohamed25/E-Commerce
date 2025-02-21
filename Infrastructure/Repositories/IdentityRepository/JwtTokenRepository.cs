@@ -1,5 +1,5 @@
-﻿using Domain.Entities.Identity;
-using Domain.IRepositories.IIdentityRepository;
+﻿using Contracts.Contracts.IIdentityRepository;
+using Domain.Entities.Identity;
 using Infrastructure.Caching;
 using Persistence.DBConnection;
 

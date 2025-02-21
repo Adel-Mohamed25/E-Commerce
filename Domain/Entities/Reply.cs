@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Domain.Entities.Comman;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
@@ -8,6 +9,6 @@ namespace Domain.Entities
 
         [ForeignKey("Review")]
         public string ReviewId { get; set; }
-        public Review Review { get; set; } = null!;
+        public Review Review { get; set; }
     }
 }

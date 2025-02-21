@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities
+﻿using Domain.Entities.Comman;
+
+namespace Domain.Entities
 {
     public class ChatMessage : BaseEntity
     {

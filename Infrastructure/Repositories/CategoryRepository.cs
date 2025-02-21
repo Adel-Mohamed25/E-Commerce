@@ -1,5 +1,5 @@
-﻿using Domain.Entities;
-using Domain.IRepositories;
+﻿using Contracts.Contracts;
+using Domain.Entities;
 using Infrastructure.Caching;
 using Persistence.DBConnection;
 

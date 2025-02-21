@@ -4,7 +4,7 @@ namespace Services.IServices
 {
     public interface IEmailServices
     {
-        Task<EmailModel> SendEmailAsync(SendEmailModel emailModel);
-        Task<ConfirmEmailResponseModel> ConfirmEmailAsync(ConfirmEmailRequestModel emailRequestModel);
+        Task<EmailModel> SendEmailAsync(SendEmailModel sendEmailModel);
+        Task<EmailResponse> ConfirmEmailAsync(EmailRequest emailRequest);
     }
 }

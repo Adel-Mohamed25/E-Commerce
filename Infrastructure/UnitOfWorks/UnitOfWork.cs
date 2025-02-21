@@ -1,6 +1,6 @@
-﻿using Domain.Entities;
-using Domain.IRepositories;
-using Domain.IRepositories.IIdentityRepository;
+﻿using Contracts.Contracts;
+using Contracts.Contracts.IIdentityRepository;
+using Domain.Entities.Comman;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
@@ -17,13 +17,15 @@ namespace Infrastructure.UnitOfWorks
         public IUserRepository Users { get; private set; }
         public IRoleRepository Roles { get; private set; }
         public IJwtTokenRepository JwtTokens { get; private set; }
+        public IUserLoginRepository UserLogins { get; private set; }
 
         public UnitOfWork(IApplicationDbContext context,
             ILogger<UnitOfWork> logger,
             ICategoryRepository categories,
             IUserRepository users,
             IRoleRepository roles,
-            IJwtTokenRepository jwtTokens)
+            IJwtTokenRepository jwtTokens,
+            IUserLoginRepository userLogins)
         {
             _context = context;
             _logger = logger;
@@ -31,6 +33,7 @@ namespace Infrastructure.UnitOfWorks
             Users = users;
             Roles = roles;
             JwtTokens = jwtTokens;
+            UserLogins = userLogins;
         }
 
         public async ValueTask DisposeAsync()

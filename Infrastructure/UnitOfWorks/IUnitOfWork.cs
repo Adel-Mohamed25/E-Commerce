@@ -1,5 +1,5 @@
-﻿using Domain.IRepositories;
-using Domain.IRepositories.IIdentityRepository;
+﻿using Contracts.Contracts;
+using Contracts.Contracts.IIdentityRepository;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.UnitOfWorks
@@ -10,6 +10,7 @@ namespace Infrastructure.UnitOfWorks
         IUserRepository Users { get; }
         IRoleRepository Roles { get; }
         IJwtTokenRepository JwtTokens { get; }
+        IUserLoginRepository UserLogins { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         Task CommitTransactionAsync(CancellationToken cancellationToken = default);
         Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);

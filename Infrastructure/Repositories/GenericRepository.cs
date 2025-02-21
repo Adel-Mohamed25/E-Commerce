@@ -1,5 +1,5 @@
-﻿using Domain.Enums;
-using Domain.IRepositories;
+﻿using Contracts.Contracts;
+using Domain.Enums;
 using Infrastructure.Caching;
 using Microsoft.EntityFrameworkCore;
 using Persistence.DBConnection;

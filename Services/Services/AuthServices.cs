@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Identity;
+using Google.Apis.Auth;
 using Infrastructure.Settings;
 using Infrastructure.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
@@ -17,11 +18,13 @@ namespace Services.Services
     {
         private readonly JWTSettings _jWTSettings;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly GoogleSettings _googleSettings;
 
-        public AuthenticationService(IUnitOfWork unitOfWork, IOptions<JWTSettings> options)
+        public AuthenticationService(IUnitOfWork unitOfWork, IOptions<JWTSettings> jWTSettings, IOptions<GoogleSettings> googleSettings)
         {
-            _jWTSettings = options.Value;
+            _jWTSettings = jWTSettings.Value;
             _unitOfWork = unitOfWork;
+            _googleSettings = googleSettings.Value;
         }
 
 
@@ -69,7 +72,7 @@ namespace Services.Services
                 authModel.TokenModel = new()
                 {
                     Token = activeUserToken.Token,
-                    TokenExpirationDate = activeUserToken.TokenExpirationDate,
+                    TokenExpirationDate = DateTime.UtcNow.AddHours(_jWTSettings.AccessTokenExpireDate),
                 };
 
                 authModel.RefreshTokenModel = new()
@@ -128,7 +131,7 @@ namespace Services.Services
             var refreshToken = new RefreshTokenModel
             {
                 RefreshToken = newRefreshToken,
-                RefreshTokenExpirationDate = DateTime.UtcNow.AddHours(_jWTSettings.RefreshTokenExpireDate),
+                RefreshTokenExpirationDate = DateTime.UtcNow.AddDays(_jWTSettings.RefreshTokenExpireDate),
             };
             return refreshToken;
         }
@@ -243,6 +246,17 @@ namespace Services.Services
                     RefreshTokenExpirationDate = newUserToken.RefreshTokenExpirationDate
                 }
             };
+        }
+
+
+        private async Task<GoogleJsonWebSignature.Payload> VerifyGoogleTokenAsync(string ProviderKey)
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings
+            {
+                Audience = new[] { _googleSettings.ClientId }
+            };
+            var payload = await GoogleJsonWebSignature.ValidateAsync(ProviderKey, settings);
+            return payload;
         }
 
     }
