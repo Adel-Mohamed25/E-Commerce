@@ -9,7 +9,7 @@ namespace API.Controllers.V1
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
 
-    public class AuthController : AppBaseController
+    public class AuthController : BaseApiController
     {
         [HttpPost("Register")]
         public async Task<IActionResult> Register(CreateUserModel createUserModel)

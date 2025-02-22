@@ -1,6 +1,6 @@
 ﻿using Models.Email;
 
-namespace Services.IServices
+namespace Services.Abstractions
 {
     public interface IEmailServices
     {

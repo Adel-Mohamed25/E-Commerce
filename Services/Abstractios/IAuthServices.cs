@@ -2,7 +2,7 @@
 using Models.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace Services.IServices
+namespace Services.Abstractions
 {
     public interface IAuthServices
     {

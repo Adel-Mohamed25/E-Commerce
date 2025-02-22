@@ -1,4 +1,4 @@
-﻿using Domain.Entities.Comman;
+﻿using Domain.Commons;
 using Domain.Enums;
 
 namespace Domain.Entities

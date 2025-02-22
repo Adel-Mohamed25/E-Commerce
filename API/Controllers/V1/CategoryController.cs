@@ -1,5 +1,6 @@
 ﻿using Application.Features.V1.CategoryFeatures.Commands.CategoryCommands;
 using Application.Features.V1.CategoryFeatures.Queries.CategoryQueries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Category;
 
@@ -7,11 +8,11 @@ using Models.Category;
 
 namespace API.Controllers.V1
 {
-    //[Authorize]
+    [Authorize]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class CategoryController : AppBaseController
+    public class CategoryController : BaseApiController
     {
         [HttpGet("GetAll")]
         [MapToApiVersion("1.0")]

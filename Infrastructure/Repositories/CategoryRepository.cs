@@ -1,7 +1,7 @@
-﻿using Contracts.Contracts;
+﻿using Contracts.Repositories;
 using Domain.Entities;
 using Infrastructure.Caching;
-using Persistence.DBConnection;
+using Persistence.Context;
 
 namespace Infrastructure.Repositories
 {

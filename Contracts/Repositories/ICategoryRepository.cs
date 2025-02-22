@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Contracts.Contracts
+namespace Contracts.Repositories
 {
     public interface ICategoryRepository : IGenericRepository<Category>
     {

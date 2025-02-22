@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Models.ResponseModels;
 using System.Net;
 
-namespace API.Controllers.V1
+namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AppBaseController : ControllerBase
+    public class BaseApiController : ControllerBase
     {
         private IMediator _mediator;
 

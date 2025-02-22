@@ -2,17 +2,16 @@
 using Google.Apis.Auth;
 using Infrastructure.Settings;
 using Infrastructure.UnitOfWorks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models.Authentication;
-using Services.IServices;
+using Services.Abstractions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Services.Services
+namespace Services.Implementations
 {
     public class AuthenticationService : IAuthServices
     {
@@ -67,19 +66,23 @@ namespace Services.Services
 
             if (user.JwtTokens.Any(jwt => jwt.IsRefreshTokenActive))
             {
-                var activeUserToken = user.JwtTokens.Where(jwt => jwt.IsRefreshTokenActive).FirstOrDefault();
+                //var activeUserToken = user.JwtTokens.Where(jwt => jwt.IsRefreshTokenActive).FirstOrDefault();
+                //var newTokenExpirationDate = DateTime.UtcNow.AddHours(_jWTSettings.AccessTokenExpireDate);
 
-                authModel.TokenModel = new()
-                {
-                    Token = activeUserToken.Token,
-                    TokenExpirationDate = DateTime.UtcNow.AddHours(_jWTSettings.AccessTokenExpireDate),
-                };
+                //authModel.TokenModel = new()
+                //{
+                //    Token = await GenerateTokenAsync(user, GetClaimsAsync),
+                //    TokenExpirationDate = newTokenExpirationDate < activeUserToken.RefreshTokenExpirationDate
+                //                          ? newTokenExpirationDate : activeUserToken.RefreshTokenExpirationDate,
 
-                authModel.RefreshTokenModel = new()
-                {
-                    RefreshToken = activeUserToken.RefreshToken,
-                    RefreshTokenExpirationDate = activeUserToken.RefreshTokenExpirationDate
-                };
+                //};
+
+                //authModel.RefreshTokenModel = new()
+                //{
+                //    RefreshToken = activeUserToken.RefreshToken,
+                //    RefreshTokenExpirationDate = activeUserToken.RefreshTokenExpirationDate
+                //};
+                authModel = await GetRefreshTokenAsync(user);
             }
             else
             {
@@ -199,12 +202,6 @@ namespace Services.Services
             return Task.FromResult(new JwtSecurityTokenHandler().ReadJwtToken(jwt));
         }
 
-        private async Task<bool> UpdateUserTokensAsync(User user)
-        {
-            IdentityResult result = await _unitOfWork.Users.UserManager.UpdateAsync(user);
-            return result.Succeeded;
-        }
-
         public async Task<AuthModel> GetRefreshTokenAsync(User user)
         {
             var jwtToken = user.JwtTokens.FirstOrDefault(u => u.IsRefreshTokenActive);
@@ -218,20 +215,17 @@ namespace Services.Services
 
             var newUserToken = new JwtToken
             {
+                Id = jwtToken.Id,
                 UserId = user.Id,
                 Token = newToken,
                 TokenExpirationDate = DateTime.UtcNow.AddHours(_jWTSettings.AccessTokenExpireDate),
                 RefreshToken = newRefreshToken,
-                RefreshTokenExpirationDate = DateTime.UtcNow.AddDays(_jWTSettings.RefreshTokenExpireDate),
+                RefreshTokenExpirationDate = jwtToken.RefreshTokenExpirationDate,
                 IsRefreshTokenUsed = true
             };
 
-            user.JwtTokens.Add(newUserToken);
-
-
-            bool isupdated = await UpdateUserTokensAsync(user);
-            if (!isupdated)
-                return null;
+            await _unitOfWork.JwtTokens.UpdateAsync(newUserToken);
+            await _unitOfWork.SaveChangesAsync();
 
             return new AuthModel
             {

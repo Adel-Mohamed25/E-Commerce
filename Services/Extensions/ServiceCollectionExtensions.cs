@@ -4,8 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Services.IServices;
-using Services.Services;
+using Services.Abstractions;
+using Services.Implementations;
 using Services.UnitOfServices;
 using System.Text;
 

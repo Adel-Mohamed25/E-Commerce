@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Persistence.DBConnection;
+using Persistence.Context;
 
 #nullable disable
 
@@ -310,7 +310,9 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Identity.Role", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -876,8 +878,6 @@ namespace Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserLogins", (string)null);
-
-                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -912,13 +912,6 @@ namespace Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.Identity.UserLogin", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>");
-
-                    b.ToTable("UserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.CartItem", b =>
@@ -1124,15 +1117,6 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Identity.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Identity.UserLogin", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", null)
-                        .WithOne()
-                        .HasForeignKey("Domain.Entities.Identity.UserLogin", "LoginProvider", "ProviderKey")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

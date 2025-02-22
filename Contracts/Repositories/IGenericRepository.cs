@@ -1,7 +1,7 @@
 ﻿using Domain.Enums;
 using System.Linq.Expressions;
 
-namespace Contracts.Contracts
+namespace Contracts.Repositories
 {
     public interface IGenericRepository<TEntity> where TEntity : class
     {

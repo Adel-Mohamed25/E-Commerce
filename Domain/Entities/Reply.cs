@@ -1,4 +1,4 @@
-﻿using Domain.Entities.Comman;
+﻿using Domain.Commons;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities

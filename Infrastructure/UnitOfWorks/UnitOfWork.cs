@@ -1,10 +1,10 @@
-﻿using Contracts.Contracts;
-using Contracts.Contracts.IIdentityRepository;
-using Domain.Entities.Comman;
+﻿using Contracts.Repositories;
+using Contracts.Repositories.IdentityRepositories;
+using Domain.Commons;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using Persistence.DBConnection;
+using Persistence.Context;
 
 namespace Infrastructure.UnitOfWorks
 {

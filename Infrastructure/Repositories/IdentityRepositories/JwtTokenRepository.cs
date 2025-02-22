@@ -1,9 +1,9 @@
-﻿using Contracts.Contracts.IIdentityRepository;
+﻿using Contracts.Repositories.IdentityRepositories;
 using Domain.Entities.Identity;
 using Infrastructure.Caching;
-using Persistence.DBConnection;
+using Persistence.Context;
 
-namespace Infrastructure.Repositories.IdentityRepository
+namespace Infrastructure.Repositories.IdentityRepositories
 {
     public class JwtTokenRepository : GenericRepository<JwtToken>, IJwtTokenRepository
     {

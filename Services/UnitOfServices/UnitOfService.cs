@@ -1,5 +1,5 @@
 ﻿
-using Services.IServices;
+using Services.Abstractions;
 
 namespace Services.UnitOfServices
 {

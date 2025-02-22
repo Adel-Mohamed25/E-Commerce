@@ -8,7 +8,11 @@ namespace Persistence.Configurations.Identity
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.Property(r => r.Id);
+            builder.HasKey(r => r.Id);
+
+            builder.Property(r => r.Id)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("NEWID()");
 
             builder.ToTable("Roles");
         }

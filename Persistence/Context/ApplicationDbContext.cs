@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace Persistence.DBConnection
+namespace Persistence.Context
 {
     public class ApplicationDbContext : IdentityDbContext<User,
         Role, string>,
@@ -21,7 +21,6 @@ namespace Persistence.DBConnection
         public DbSet<Order> Orders { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<User> Users { get; set; }
-        //public DbSet<UserLogin> UserLogins { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<CartItem> CartItems { get; set; }

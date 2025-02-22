@@ -1,16 +1,16 @@
-﻿using Contracts.Contracts;
-using Contracts.Contracts.IIdentityRepository;
+﻿using Contracts.Repositories;
+using Contracts.Repositories.IdentityRepositories;
 using Domain.Entities.Identity;
 using Infrastructure.Caching;
 using Infrastructure.Repositories;
-using Infrastructure.Repositories.IdentityRepository;
+using Infrastructure.Repositories.IdentityRepositories;
 using Infrastructure.Settings;
 using Infrastructure.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Persistence.DBConnection;
+using Persistence.Context;
 
 namespace Infrastructure.Extensions
 {

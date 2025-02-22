@@ -37,6 +37,8 @@ namespace Application.Features.V1.UserFeatures.Commands.UserCommandsHandler
                 if (!isPasswordCorrect)
                     return ResponseHandler.BadRequest<AuthModel>(errors: "Incorrect email or password");
 
+
+
                 var authModel = await _unitOfService.AuthServices.GetTokenAsync(user);
                 return ResponseHandler.Success(authModel);
             }

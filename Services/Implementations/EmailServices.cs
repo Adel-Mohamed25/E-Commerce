@@ -3,11 +3,11 @@ using Infrastructure.UnitOfWorks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Models.Email;
-using Services.IServices;
+using Services.Abstractions;
 using System.Net;
 using System.Net.Mail;
 
-namespace Services.Services
+namespace Services.Implementations
 {
     public class EmailServices : IEmailServices
     {

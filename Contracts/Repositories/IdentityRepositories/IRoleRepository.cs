@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 
-namespace Contracts.Contracts.IIdentityRepository
+namespace Contracts.Repositories.IdentityRepositories
 {
     public interface IRoleRepository : IGenericRepository<Role>
     {

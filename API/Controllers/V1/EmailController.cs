@@ -7,7 +7,7 @@ namespace API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class EmailController : AppBaseController
+    public class EmailController : BaseApiController
     {
         [HttpPost("SendEmail")]
         public async Task<IActionResult> SendEmail([FromBody] SendEmailModel sendEmail)

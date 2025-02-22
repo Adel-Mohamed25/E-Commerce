@@ -1,8 +1,8 @@
-﻿using Contracts.Contracts;
+﻿using Contracts.Repositories;
 using Domain.Enums;
 using Infrastructure.Caching;
 using Microsoft.EntityFrameworkCore;
-using Persistence.DBConnection;
+using Persistence.Context;
 using System.Linq.Expressions;
 
 namespace Infrastructure.Repositories
