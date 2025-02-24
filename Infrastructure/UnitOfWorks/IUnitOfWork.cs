@@ -1,5 +1,5 @@
-﻿using Contracts.Repositories;
-using Contracts.Repositories.IdentityRepositories;
+﻿using Contracts.Abstractions;
+using Contracts.Abstractions.IdentityRepositories;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.UnitOfWorks

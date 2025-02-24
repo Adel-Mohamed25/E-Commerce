@@ -4,7 +4,7 @@ using System.Net;
 
 namespace Application.Helper.ResponseServices
 {
-    public sealed class ResponseHandler
+    public static class ResponseHandler
     {
         public static Response<TData> Success<TData>(
             TData data = null,
@@ -17,7 +17,7 @@ namespace Application.Helper.ResponseServices
                 issucceeded: true,
                 message: message ?? ResponseMessage.SuccessMessage,
                 data: data,
-                errors: errors ?? "There Are No Errors",
+                errors: errors ?? "There are no errors",
                 meta: meta
             );
         }
@@ -34,7 +34,7 @@ namespace Application.Helper.ResponseServices
                 message: message ?? ResponseMessage.NotFoundMessage,
                 meta: meta,
                 data: data,
-                errors: errors ?? "Not Found Object"
+                errors: errors ?? "Not found data"
 
             );
         }

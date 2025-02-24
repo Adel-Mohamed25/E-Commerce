@@ -2,6 +2,7 @@
 using Application.Helper.ResponseServices;
 using AutoMapper;
 using Infrastructure.UnitOfWorks;
+using Infrastructure.Utilities.Caching.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -18,13 +19,19 @@ namespace Application.Features.V1.CategoryFeatures.Queries.CategoryQueriesHandle
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<GetAllCategoriesQueryHandler> _logger;
+        private readonly IRedisCacheService _cache;
 
-        public GetAllCategoriesQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor, ILogger<GetAllCategoriesQueryHandler> logger)
+        public GetAllCategoriesQueryHandler(IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor,
+            ILogger<GetAllCategoriesQueryHandler> logger
+            , IRedisCacheService cache)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _logger = logger;
+            _cache = cache;
         }
         public async Task<Response<IEnumerable<CategoryModel>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
@@ -53,7 +60,12 @@ namespace Application.Features.V1.CategoryFeatures.Queries.CategoryQueriesHandle
                     return ResponseHandler.NotFound<IEnumerable<CategoryModel>>();
                 var categories = await _unitOfWork.Categories.GetAllAsync(orderBy: c => c.Name, cancellationToken: cancellationToken);
                 var data = _mapper.Map<IEnumerable<CategoryModel>>(categories);
+                var result = _cache.GetData<IEnumerable<CategoryModel>>("Categories");
+                if (result != null)
+                    return ResponseHandler.Success(result);
+                _cache.SetData("Categories", data);
                 return ResponseHandler.Success(data);
+
             }
             catch (Exception ex)
             {

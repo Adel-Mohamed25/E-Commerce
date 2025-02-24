@@ -1,13 +1,12 @@
-﻿using Contracts.Repositories;
+﻿using Contracts.Abstractions;
 using Domain.Entities;
-using Infrastructure.Caching;
 using Persistence.Context;
 
 namespace Infrastructure.Repositories
 {
     public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
-        public CategoryRepository(IApplicationDbContext context, IRedisCacheService cache) : base(context, cache)
+        public CategoryRepository(IApplicationDbContext context) : base(context)
         {
         }
     }

@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using Infrastructure.Utilities.Caching.Abstractions;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Text;
 using System.Text.Json;
 
-namespace Infrastructure.Caching
+namespace Infrastructure.Utilities.Caching.Implementations
 {
     public class RedisCacheService : IRedisCacheService
     {
@@ -18,7 +19,7 @@ namespace Infrastructure.Caching
             var data = _cache?.GetString(key);
             if (data == null)
             {
-                return default(T?);
+                return default;
             }
             return JsonSerializer.Deserialize<T>(data)!;
         }

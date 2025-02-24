@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.Identity;
 
-namespace Contracts.Repositories.IdentityRepositories
+namespace Contracts.Abstractions.IdentityRepositories
 {
     public interface IUserLoginRepository : IGenericRepository<UserLogin>
     {

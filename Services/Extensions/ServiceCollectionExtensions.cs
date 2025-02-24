@@ -15,6 +15,7 @@ namespace Services.Extensions
     {
         public static IServiceCollection AddServicesDependencies(this IServiceCollection services, IConfiguration configuration)
         {
+
             #region JwtAuthenticationSettings
             var jwtSection = configuration.GetSection($"{nameof(JWTSettings)}");
             var googleSection = configuration.GetSection($"Authentication:{nameof(GoogleSettings)}");
@@ -98,6 +99,7 @@ namespace Services.Extensions
             services.AddScoped<IUnitOfService, UnitOfService>();
             services.AddScoped<IEmailServices, EmailServices>();
             services.AddScoped<IAuthServices, AuthenticationService>();
+            services.AddHttpContextAccessor();
 
             return services;
         }

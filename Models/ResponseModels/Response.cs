@@ -4,7 +4,12 @@ namespace Models.ResponseModels
 {
     public class Response<TData> where TData : class
     {
-        public Response(HttpStatusCode statusCode = default, bool issucceeded = default, string message = default!, string errors = default!, string meta = default!, TData? data = default)
+        public Response(HttpStatusCode statusCode = default,
+            bool issucceeded = default,
+            string message = default,
+            string errors = default,
+            string meta = default,
+            TData? data = default)
         {
             StatusCode = statusCode;
             Message = message;

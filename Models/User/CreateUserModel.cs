@@ -14,7 +14,6 @@ namespace Models.User
         public int? Age { get; set; }
 
         public string PhoneNumber { get; set; }
-        public string? ProfilePictureUrl { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public GenderType Gender { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using Application.Features.V1.CategoryFeatures.Commands.CategoryCommands;
 using Application.Features.V1.CategoryFeatures.Queries.CategoryQueries;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Category;
@@ -19,6 +20,15 @@ namespace API.Controllers.V1
         public async Task<IActionResult> GetAll()
         {
             return NewResult(await Mediator.Send(new GetAllCategoriesQuery()));
+        }
+
+        [HttpGet("CategoriesWithPagination")]
+        public async Task<IActionResult> CategoriesWithPagination([FromQuery] int? pageNumber,
+        [FromQuery] int? pageSize,
+        [FromQuery] OrderBy orderBy,
+        [FromQuery] OrderByDirection orderByDirection)
+        {
+            return NewResult(await Mediator.Send(new GetCategoriesWithPaginationQuery(pageNumber, pageSize, orderBy, orderByDirection)));
         }
 
         [HttpGet("GetById")]

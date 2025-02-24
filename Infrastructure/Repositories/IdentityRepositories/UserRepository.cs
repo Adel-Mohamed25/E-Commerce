@@ -1,6 +1,5 @@
-﻿using Contracts.Repositories.IdentityRepositories;
+﻿using Contracts.Abstractions.IdentityRepositories;
 using Domain.Entities.Identity;
-using Infrastructure.Caching;
 using Microsoft.AspNetCore.Identity;
 using Persistence.Context;
 
@@ -10,8 +9,7 @@ namespace Infrastructure.Repositories.IdentityRepositories
     {
         public UserRepository(UserManager<User> userManager,
             SignInManager<User> signInManager,
-            IApplicationDbContext context,
-            IRedisCacheService cache) : base(context, cache)
+            IApplicationDbContext context) : base(context)
         {
             UserManager = userManager;
             SignInManager = signInManager;

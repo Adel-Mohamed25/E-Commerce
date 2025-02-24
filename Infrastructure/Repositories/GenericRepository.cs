@@ -1,6 +1,5 @@
-﻿using Contracts.Repositories;
+﻿using Contracts.Abstractions;
 using Domain.Enums;
-using Infrastructure.Caching;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using System.Linq.Expressions;
@@ -10,12 +9,10 @@ namespace Infrastructure.Repositories
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         private readonly IApplicationDbContext _context;
-        private readonly IRedisCacheService _cache;
         private readonly DbSet<TEntity> _dbset;
-        public GenericRepository(IApplicationDbContext context, IRedisCacheService cache)
+        public GenericRepository(IApplicationDbContext context)
         {
             _context = context;
-            _cache = cache;
             _dbset = _context.Set<TEntity>();
         }
 
@@ -23,20 +20,17 @@ namespace Infrastructure.Repositories
         public virtual async Task CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             await _dbset.AddAsync(entity, cancellationToken);
-            _cache.RemoveData("Entities");
         }
 
         public virtual async Task CreateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             await _dbset.AddRangeAsync(entities, cancellationToken);
-            _cache.RemoveData("Entities");
         }
 
 
         public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             _dbset.Update(entity);
-            _cache.RemoveData("Entities");
             await Task.CompletedTask;
         }
 
@@ -45,7 +39,6 @@ namespace Infrastructure.Repositories
             if (entities is not null)
             {
                 _dbset.UpdateRange(entities);
-                _cache.RemoveData("Entities");
             }
             await Task.CompletedTask;
         }
@@ -59,13 +52,11 @@ namespace Infrastructure.Repositories
             else
                 await _dbset.Where(filter).ExecuteUpdateAsync(entity => entity.SetProperty(propertySelector, valueSelector), cancellationToken);
 
-            _cache.RemoveData("Entities");
         }
 
         public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             await Task.FromResult(_dbset.Remove(entity));
-            _cache.RemoveData("Entities");
         }
 
         public virtual async Task ExecuteDeleteAsync(Expression<Func<TEntity, bool>>? filter = null, CancellationToken cancellationToken = default)
@@ -74,7 +65,6 @@ namespace Infrastructure.Repositories
                 await _dbset.ExecuteDeleteAsync(cancellationToken);
             else
                 await _dbset.Where(filter).ExecuteDeleteAsync(cancellationToken);
-            _cache.RemoveData("Entities");
         }
 
         public virtual async Task<TEntity>
@@ -131,7 +121,7 @@ namespace Infrastructure.Repositories
             if (ispagination)
             {
                 pageNumber = pageNumber.HasValue ? pageNumber.Value <= 0 ? 1 : pageNumber.Value : 1;
-                pageSize = pageSize.HasValue ? pageSize.Value <= 0 ? 5 : pageSize.Value : 5;
+                pageSize = pageSize.HasValue ? pageSize.Value <= 0 ? 10 : pageSize.Value : 10;
                 entities = entities.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
             }
 
@@ -143,19 +133,8 @@ namespace Infrastructure.Repositories
                 }
             }
 
-            var data = _cache.GetData<List<TEntity>>("Entities");
-            if (data != null && data.Any())
-            {
-                return data.AsQueryable();
-            }
 
-            var list = await entities.ToListAsync(cancellationToken);
-            if (list.Any())
-            {
-                _cache.SetData("Entities", list);
-            }
-
-            return list.AsQueryable();
+            return await Task.FromResult(entities);
         }
 
 

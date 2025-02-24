@@ -2,6 +2,7 @@
 using Google.Apis.Auth;
 using Infrastructure.Settings;
 using Infrastructure.UnitOfWorks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models.Authentication;
@@ -39,7 +40,7 @@ namespace Services.Implementations
                 IssuerSigningKey = key,
                 ValidAudience = _jWTSettings.Audience,
                 ValidateAudience = _jWTSettings.ValidateAudience,
-                ValidateLifetime = _jWTSettings.ValidateLifeTime,
+                ValidateLifetime = false,
             };
             try
             {
@@ -55,7 +56,7 @@ namespace Services.Implementations
         Task<bool> IsTokenAlgorithmValidAsync(JwtSecurityToken jwtSecurityToken) =>
             Task.FromResult(jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature));
 
-        public Func<string, JwtSecurityToken, Task<bool>> IsTokenValid
+        public Func<string, JwtSecurityToken, Task<bool>> IsTokenValidAsync
          => async (jwt, jwtSecurityToken) =>
          await IsTokenParametersValidAsync(jwt) && await IsTokenAlgorithmValidAsync(jwtSecurityToken);
 
@@ -66,23 +67,20 @@ namespace Services.Implementations
 
             if (user.JwtTokens.Any(jwt => jwt.IsRefreshTokenActive))
             {
-                //var activeUserToken = user.JwtTokens.Where(jwt => jwt.IsRefreshTokenActive).FirstOrDefault();
-                //var newTokenExpirationDate = DateTime.UtcNow.AddHours(_jWTSettings.AccessTokenExpireDate);
+                var activeUserToken = user.JwtTokens.Where(jwt => jwt.IsRefreshTokenActive).FirstOrDefault();
 
-                //authModel.TokenModel = new()
-                //{
-                //    Token = await GenerateTokenAsync(user, GetClaimsAsync),
-                //    TokenExpirationDate = newTokenExpirationDate < activeUserToken.RefreshTokenExpirationDate
-                //                          ? newTokenExpirationDate : activeUserToken.RefreshTokenExpirationDate,
+                authModel.TokenModel = new()
+                {
+                    Token = activeUserToken.Token,
+                    TokenExpirationDate = activeUserToken.TokenExpirationDate,
 
-                //};
+                };
 
-                //authModel.RefreshTokenModel = new()
-                //{
-                //    RefreshToken = activeUserToken.RefreshToken,
-                //    RefreshTokenExpirationDate = activeUserToken.RefreshTokenExpirationDate
-                //};
-                authModel = await GetRefreshTokenAsync(user);
+                authModel.RefreshTokenModel = new()
+                {
+                    RefreshToken = activeUserToken.RefreshToken,
+                    RefreshTokenExpirationDate = activeUserToken.RefreshTokenExpirationDate
+                };
             }
             else
             {
@@ -92,12 +90,13 @@ namespace Services.Implementations
 
                 var JwtToken = new JwtToken
                 {
-                    Token = token,
-                    RefreshToken = refreshToken.RefreshToken,
-                    IsRefreshTokenUsed = true,
                     UserId = user.Id,
+                    Token = token,
+                    RefreshToken = refreshToken,
                     TokenExpirationDate = DateTime.UtcNow.AddHours(_jWTSettings.AccessTokenExpireDate),
                     RefreshTokenExpirationDate = DateTime.UtcNow.AddDays(_jWTSettings.RefreshTokenExpireDate),
+                    IsRefreshTokenUsed = true,
+                    ModifiedDate = DateTime.Now,
                 };
 
                 using var trasaction = await _unitOfWork.BeginTransactionAsync();
@@ -128,15 +127,13 @@ namespace Services.Implementations
             return authModel;
         }
 
-        private RefreshTokenModel GenerateRefreshToken()
+        private string GenerateRefreshToken()
         {
-            var newRefreshToken = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(Guid.NewGuid().ToString())));
-            var refreshToken = new RefreshTokenModel
-            {
-                RefreshToken = newRefreshToken,
-                RefreshTokenExpirationDate = DateTime.UtcNow.AddDays(_jWTSettings.RefreshTokenExpireDate),
-            };
-            return refreshToken;
+            //var newRefreshToken = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(Guid.NewGuid().ToString())));
+            var randomNumber = new byte[64];
+            var randomNumberGenerate = RandomNumberGenerator.Create();
+            randomNumberGenerate.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
 
         private async Task<string> GenerateTokenAsync(User user, Func<User, Task<List<Claim>>> Claims)
@@ -196,10 +193,11 @@ namespace Services.Implementations
 
         public Task<JwtSecurityToken> ReadTokenAsync(string jwt)
         {
+            var handler = new JwtSecurityTokenHandler();
             if (string.IsNullOrEmpty(jwt) || string.IsNullOrWhiteSpace(jwt))
-                return null;
+                return Task.FromResult<JwtSecurityToken>(null);
 
-            return Task.FromResult(new JwtSecurityTokenHandler().ReadJwtToken(jwt));
+            return Task.FromResult(handler.ReadJwtToken(jwt));
         }
 
         public async Task<AuthModel> GetRefreshTokenAsync(User user)
@@ -211,7 +209,7 @@ namespace Services.Implementations
             jwtToken.RefreshTokenRevokedDate = DateTime.UtcNow;
 
             var newToken = await GenerateTokenAsync(user, GetClaimsAsync);
-            var newRefreshToken = GenerateRefreshToken().RefreshToken;
+            var newRefreshToken = GenerateRefreshToken();
 
             var newUserToken = new JwtToken
             {
@@ -252,6 +250,19 @@ namespace Services.Implementations
             var payload = await GoogleJsonWebSignature.ValidateAsync(ProviderKey, settings);
             return payload;
         }
+
+        public async Task<string> GenerateVerificationCodeAsync(User user)
+        {
+            var code = await _unitOfWork.Users.UserManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
+            return code;
+        }
+
+        public async Task<bool> VerifyCodeAsync(User user, string code)
+        {
+            var isValid = await _unitOfWork.Users.UserManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, code);
+            return isValid;
+        }
+
 
     }
 }

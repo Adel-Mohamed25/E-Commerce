@@ -36,5 +36,22 @@ namespace API.Controllers.V1
             return NewResult(await Mediator.Send(new FacebookExternalLoginCommand(externalAuth)));
         }
 
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestModel refreshTokenRequest)
+        {
+            return NewResult(await Mediator.Send(new RefreshTokenCommand(refreshTokenRequest)));
+        }
+
+        [HttpPost("VerifyCode")]
+        public async Task<IActionResult> VerifyCode([FromBody] VerifyEmailModel email)
+        {
+            return NewResult(await Mediator.Send(new VerifyUserCommand(email)));
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel resetPassword)
+        {
+            return NewResult(await Mediator.Send(new ResetPasswordCommand(resetPassword)));
+        }
     }
 }

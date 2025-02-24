@@ -40,6 +40,12 @@ namespace Services.Implementations
                 smtpClient.Credentials = new NetworkCredential(_emailSettings.From, _emailSettings.Password);
                 smtpClient.EnableSsl = true;
 
+                sendEmailModel.Body = System.Text.RegularExpressions.Regex.Replace(
+                    sendEmailModel.Body,
+                    @"\b\d+\b",
+                    match => $"<b>{match.Value}</b>"
+                );
+
                 using var mailMessage = new MailMessage
                 {
                     From = new MailAddress(_emailSettings.From, _emailSettings.DisplayName),

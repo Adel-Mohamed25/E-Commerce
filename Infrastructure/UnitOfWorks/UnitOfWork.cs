@@ -1,5 +1,5 @@
-﻿using Contracts.Repositories;
-using Contracts.Repositories.IdentityRepositories;
+﻿using Contracts.Abstractions;
+using Contracts.Abstractions.IdentityRepositories;
 using Domain.Commons;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
