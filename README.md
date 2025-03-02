@@ -1,5 +1,4 @@
 # E-Commerce
-# E-Commerce
 # E-Commerce Management System
 
 ![E-Commerce](https://your-image-link-here.com/ecommerce.jpg)
