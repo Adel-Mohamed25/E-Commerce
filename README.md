@@ -33,6 +33,7 @@ The **E-Commerce Management System** is a full-featured platform built using **.
 ECommerceManagementSystem/
 │── API/            # API Controllers
 │── Application/    # Business Logic
+│── Contracts/      # Interfaces for Abstraction
 │── Domain/         # Entities & Core Logic
 │── Infrastructure/  # Database & Caching
 │── Persistence/    # Data Persistence Layer
