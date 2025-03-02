@@ -53,5 +53,11 @@ namespace API.Controllers.V1
         {
             return NewResult(await Mediator.Send(new ResetPasswordCommand(resetPassword)));
         }
+
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            return NewResult(await Mediator.Send(new LogoutUserCommand()));
+        }
     }
 }

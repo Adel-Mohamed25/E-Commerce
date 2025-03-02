@@ -55,14 +55,7 @@ namespace Application.Features.V1.CategoryFeatures.Queries.CategoryQueriesHandle
                 cancellationToken: cancellationToken);
 
             var data = _mapper.Map<IEnumerable<CategoryModel>>(categories);
-            var result = _cache.GetData<IEnumerable<CategoryModel>>("PaginationCategories");
-            if (result != null)
-                return PaginationResponseHandler.Success(data: result,
-                    pageNumber: request.pageNumber!.Value,
-                    pageSize: request.pageSize!.Value,
-                    totalCount: await _unitOfWork.Categories.CountAsync(cancellationToken: cancellationToken));
 
-            _cache.SetData("PaginationCategories", data);
             return PaginationResponseHandler.Success(data: data,
                 pageNumber: request.pageNumber!.Value,
                 pageSize: request.pageSize!.Value,

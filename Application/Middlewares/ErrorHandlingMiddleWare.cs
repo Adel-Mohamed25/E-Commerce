@@ -34,58 +34,29 @@ namespace Application.Middlewares
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             var response = context.Response;
-
             response.ContentType = "application/json";
+
+            var (message, statusCode) = exception switch
+            {
+                UnauthorizedAccessException e => (e.Message, HttpStatusCode.Unauthorized),
+                ValidationException e => (e.Message, HttpStatusCode.UnprocessableEntity),
+                KeyNotFoundException e => (e.Message, HttpStatusCode.NotFound),
+                BadHttpRequestException e => (e.Message, HttpStatusCode.BadRequest),
+                DbUpdateException e => (e.Message, HttpStatusCode.BadRequest),
+                DbException e => ($"{e.Message}{(e.InnerException != null ? "\nInnerException: " + e.InnerException.Message : "")}", HttpStatusCode.InternalServerError),
+                _ => (exception.Message, HttpStatusCode.InternalServerError)
+            };
 
             var result = new Response<string>()
             {
                 IsSucceeded = false,
-                Message = exception.Message
+                Message = message,
+                StatusCode = statusCode
             };
 
-
-            switch (exception)
-            {
-                case UnauthorizedAccessException e:
-                    // custom application exception
-                    result.Message = exception.Message;
-                    result.StatusCode = HttpStatusCode.Unauthorized;
-                    response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    break;
-
-                case ValidationException e:
-                    // custom validation exception
-                    result.Message = exception.Message;
-                    result.StatusCode = HttpStatusCode.UnprocessableEntity;
-                    response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
-                    break;
-                case KeyNotFoundException e:
-                    // not found exception
-                    result.Message = exception.Message;
-                    result.StatusCode = HttpStatusCode.NotFound;
-                    response.StatusCode = (int)HttpStatusCode.NotFound;
-                    break;
-
-                case DbUpdateException e:
-                    // can't update exception
-                    result.Message = e.Message;
-                    result.StatusCode = HttpStatusCode.BadRequest;
-                    response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    break;
-                case DbException e:
-                    result.Message = $"{e.Message}{(e.InnerException != null ? "\nInnerException: " + e.InnerException.Message : "")}";
-                    result.StatusCode = HttpStatusCode.InternalServerError;
-                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    break;
-                default:
-                    // unhandled exception
-                    result.Message = exception.Message;
-                    result.StatusCode = HttpStatusCode.InternalServerError;
-                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    break;
-            }
-
+            response.StatusCode = (int)statusCode;
             await response.WriteAsJsonAsync(result);
         }
+
     }
 }

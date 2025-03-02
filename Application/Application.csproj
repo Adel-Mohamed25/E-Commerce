@@ -14,7 +14,6 @@
     <Folder Include="Features\V1\UserFeatures\Validations\" />
     <Folder Include="Features\V1\UserFeatures\Queries\" />
     <Folder Include="Hubs\" />
-    <Folder Include="Resources\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +25,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Services\Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\SharedResource.ar-EG.resx">
+      <LastGenOutput>SharedResource.ar-EG.Designer.cs</LastGenOutput>
+      <Generator>None</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SharedResource.resx">
+      <Generator>None</Generator>
+      <LastGenOutput>SharedResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

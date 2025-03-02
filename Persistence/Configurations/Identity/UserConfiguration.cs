@@ -26,7 +26,7 @@ namespace Persistence.Configurations.Identity
 
             builder.Property(u => u.Address)
                 .HasMaxLength(200)
-                .IsRequired();
+                .IsRequired(false);
 
             builder.Property(u => u.Age)
                 .IsRequired(false);
