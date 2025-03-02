@@ -1,7 +1,7 @@
 # E-Commerce
 # E-Commerce Management System
 
-![E-Commerce](https://your-image-link-here.com/ecommerce.jpg)
+![E-Commerce](assets/images/ecommerce.png)
 
 ## 📌 Overview
 The **E-Commerce Management System** is a full-featured platform built using **.NET Core** with **Onion Architecture**, ensuring scalability, maintainability, and high performance. It provides a seamless shopping experience with user authentication, product management, and order processing.
@@ -29,6 +29,7 @@ The **E-Commerce Management System** is a full-featured platform built using **.
 | **Swagger** | API documentation |
 
 ## 📂 Project Structure
+```
 ECommerceManagementSystem/
 │── API/            # API Controllers
 │── Application/    # Business Logic
@@ -37,35 +38,36 @@ ECommerceManagementSystem/
 │── Persistence/    # Data Persistence Layer
 │── Services/       # Business Services
 │── Models/         # Data Models
-
+```
 
 ## 🔧 Installation & Setup
 1. **Clone the Repository**
-bash
+```bash
 git clone https://github.com/Adel-Mohamed25/E-Commerce.git
 cd E-Commerce
-
+```
 2. **Configure Database** (Ensure SQL Server is running)
 3. **Apply Migrations**
-bash
+```bash
 dotnet ef database update
-
+```
 4. **Run the Application**
-bash
+```bash
 dotnet run
-
+```
 5. **Access Swagger API Documentation**
+```
 https://localhost:44303/swagger/index.html
-
+```
 
 ## 📖 API Endpoints
 | Method | Endpoint | Description |
 |--------|---------|-------------|
-| **GET** | /api/products | Get all products |
-| **POST** | /api/auth/register | Register a new user |
-| **POST** | /api/auth/login | Login user |
-| **PUT** | /api/orders/{id} | Update order |
-| **DELETE** | /api/orders/{id} | Cancel order |
+| **GET** | `/api/products` | Get all products |
+| **POST** | `/api/auth/register` | Register a new user |
+| **POST** | `/api/auth/login` | Login user |
+| **PUT** | `/api/orders/{id}` | Update order |
+| **DELETE** | `/api/orders/{id}` | Cancel order |
 
 ## 📜 License
 This project is licensed under the MIT License.
@@ -80,3 +82,4 @@ Contributions are welcome! Feel free to fork this repository and submit a pull r
 
 ---
 Made with ❤️ by **Adel Mohamed Abdullah** 🚀
+
