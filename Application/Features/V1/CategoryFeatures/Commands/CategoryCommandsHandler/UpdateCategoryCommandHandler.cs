@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain.Entities;
 using Infrastructure.UnitOfWorks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Models.Category;
 using Models.ResponseModels;
 
@@ -13,16 +14,24 @@ namespace Application.Features.V1.CategoryFeatures.Commands.CategoryCommandsHand
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UpdateCategoryCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public UpdateCategoryCommandHandler(IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<Response<CategoryModel>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
             try
             {
+                var httpContext = _httpContextAccessor.HttpContext;
+                if (httpContext == null || httpContext.User.Identity?.IsAuthenticated == false)
+                    return ResponseHandler.Unauthorized<CategoryModel>(message: "Unauthorized request");
+
                 if (request.Id != request.CategoryModel.Id)
                 {
                     return ResponseHandler.BadRequest<CategoryModel>(errors: "Different identifier in both cases");

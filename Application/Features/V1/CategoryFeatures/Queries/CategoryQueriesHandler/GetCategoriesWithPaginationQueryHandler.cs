@@ -38,6 +38,10 @@ namespace Application.Features.V1.CategoryFeatures.Queries.CategoryQueriesHandle
         }
         public async Task<PaginationResponse<IEnumerable<CategoryModel>>> Handle(GetCategoriesWithPaginationQuery request, CancellationToken cancellationToken)
         {
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null || httpContext.User.Identity?.IsAuthenticated == false)
+                return PaginationResponseHandler.Unauthorized<IEnumerable<CategoryModel>>(message: "Unauthorized request");
+
             if (!await _unitOfWork.Categories.IsExistAsync(cancellationToken: cancellationToken))
                 return PaginationResponseHandler.NotFound<IEnumerable<CategoryModel>>();
 

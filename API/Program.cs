@@ -7,10 +7,20 @@ using Infrastructure.UnitOfWorks;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Serilog;
 using Services.Extensions;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// add Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Logging.AddSerilog(Log.Logger);
+
+Log.Information("Application Statring");
 
 // Add services to the container.
 

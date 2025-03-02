@@ -61,6 +61,11 @@ namespace Application.Features.V1.CategoryFeatures.Queries.CategoryQueriesHandle
                 _logger.LogInformation($"Host Name: {hostEntry.HostName}");
                 #endregion
 
+                var httpContext = _httpContextAccessor.HttpContext;
+                if (httpContext == null || httpContext.User.Identity?.IsAuthenticated == false)
+                    return ResponseHandler.Unauthorized<IEnumerable<CategoryModel>>(message: "Unauthorized request");
+
+
                 if (!await _unitOfWork.Categories.IsExistAsync(cancellationToken: cancellationToken))
                     return ResponseHandler.NotFound<IEnumerable<CategoryModel>>();
                 var categories = await _unitOfWork.Categories.GetAllAsync(orderBy: c => c.Name, cancellationToken: cancellationToken);
