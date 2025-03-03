@@ -172,12 +172,12 @@ namespace Services.Implementations
 
             var claims = new List<Claim>()
             {
-                new Claim (JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),
-                new (ClaimTypes.PrimarySid, user.Id),
-                new (ClaimTypes.Name,user.FirstName),
-                new (ClaimTypes.Name,user.LastName),
-                new (ClaimTypes.Email,user.Email),
-                new (ClaimTypes.MobilePhone, user.PhoneNumber),
+                new (JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),
+                new (ClaimTypes.PrimarySid, user.Id?.ToString() ?? throw new ArgumentNullException(nameof(user.Id))),
+                new (ClaimTypes.GivenName, user.FirstName ?? string.Empty),
+                new (ClaimTypes.Surname, user.LastName ?? string.Empty),
+                new (ClaimTypes.Name, user.UserName ?? throw new ArgumentNullException(nameof(user.UserName))),
+                new (ClaimTypes.Email, user.Email ?? throw new ArgumentNullException(nameof(user.Email))),
             };
 
 

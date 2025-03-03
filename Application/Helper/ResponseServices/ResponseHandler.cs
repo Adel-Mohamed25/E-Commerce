@@ -4,7 +4,7 @@ using System.Net;
 
 namespace Application.Helper.ResponseServices
 {
-    public static class ResponseHandler
+    public sealed class ResponseHandler
     {
         public static Response<TData> Success<TData>(
             TData data = null,

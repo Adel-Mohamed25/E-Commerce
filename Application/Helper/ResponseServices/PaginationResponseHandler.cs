@@ -23,7 +23,7 @@ namespace Application.Helper.ResponseServices
                 data: data,
                 errors: errors ?? "There are no errore",
                 totalCount: totalCount,
-                pageNumber: pageNumber,
+                currentPage: pageNumber,
                 pageSize: pageSize
 
             );
@@ -46,7 +46,7 @@ namespace Application.Helper.ResponseServices
                 data: data,
                 errors: errors ?? "Not found data",
                 totalCount: totalCount,
-                pageNumber: pageNumbre,
+                currentPage: pageNumbre,
                 pageSize: pageSize
 
             );
@@ -69,7 +69,7 @@ namespace Application.Helper.ResponseServices
                 data: data,
                 errors: errors ?? "Unauthorized request",
                 totalCount: totalCount,
-                pageNumber: pageNumbre,
+                currentPage: pageNumbre,
                 pageSize: pageSize
 
             );

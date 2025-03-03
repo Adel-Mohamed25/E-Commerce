@@ -12,6 +12,8 @@ using Models.Authentication;
 using Models.Email;
 using Models.ResponseModels;
 using Services.UnitOfServices;
+using System.Net;
+using System.Net.Sockets;
 
 namespace Application.Features.V1.UserFeatures.Commands.UserCommandsHandler
 {
@@ -39,6 +41,25 @@ namespace Application.Features.V1.UserFeatures.Commands.UserCommandsHandler
         {
             try
             {
+                #region Get IP address from HttpContext
+                var remoteIpAddress = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress;
+
+                if (remoteIpAddress != null && remoteIpAddress.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    _logger.LogInformation($"Client IPv4 Address: {remoteIpAddress}");
+                }
+                else
+                {
+                    _logger.LogWarning("IPv4 Address Not Found.");
+                }
+                #endregion
+
+                #region Get host details
+                var hostName = Dns.GetHostName();
+                var hostEntry = await Dns.GetHostEntryAsync(hostName);
+                _logger.LogInformation($"Host Name: {hostEntry.HostName}");
+                #endregion
+
                 var user = _mapper.Map<User>(request.CreateUserModel);
                 user.UserName = request.CreateUserModel.Email;
                 IdentityResult result = await _unitOfWork.Users.UserManager.CreateAsync(user, request.CreateUserModel.Password);

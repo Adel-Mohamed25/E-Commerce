@@ -1,7 +1,8 @@
 ﻿namespace Application.Constants
 {
-    public static class ResponseMessage
+    public sealed class ResponseMessage
     {
+
         public const string SuccessMessage = "The request has been completed successfully.";
         public const string NotFoundMessage = "The requested resource was not found.";
         public const string BadRequestMessage = "The request is invalid. Please check your input.";

@@ -8,12 +8,9 @@
 
   <ItemGroup>
     <Folder Include="Features\V1\EmailFeatures\Validations\" />
-    <Folder Include="Features\V1\RoleFeatures\Comands\" />
     <Folder Include="Features\V1\RoleFeatures\Validations\" />
-    <Folder Include="Features\V1\RoleFeatures\Queries\" />
     <Folder Include="Features\V1\UserFeatures\Validations\" />
     <Folder Include="Features\V1\UserFeatures\Queries\" />
-    <Folder Include="Hubs\" />
   </ItemGroup>
 
   <ItemGroup>

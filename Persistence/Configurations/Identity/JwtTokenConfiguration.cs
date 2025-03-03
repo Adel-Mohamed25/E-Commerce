@@ -23,7 +23,7 @@ namespace Persistence.Configurations.Identity
             builder.HasOne(rf => rf.User)
                 .WithMany(u => u.JwtTokens)
                 .HasForeignKey(u => u.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.ToTable("JwtTokens");
         }
