@@ -104,24 +104,27 @@ try
 
 
     //Data Seeder 
-    await using var scop = app.Services.CreateAsyncScope();
-    var services = scop.ServiceProvider;
-    var loggerFactory = services.GetRequiredService<ILoggerFactory>();
-    var logger = loggerFactory.CreateLogger("app");
-    try
+    await using (var scop = app.Services.CreateAsyncScope())
     {
-        var unitOfWork = services.GetRequiredService<IUnitOfWork>();
-        await DefaultRoles.SeedAsync(unitOfWork);
-        await DefaultUsers.SeedBasicUserAsync(unitOfWork);
-        await DefaultUsers.SeedAdminUserAsync(unitOfWork);
-        await DefaultUsers.SeedSuperAdminUserAsync(unitOfWork);
-        logger.LogInformation("Finished Seeding Default Data");
-        logger.LogInformation("Application Starting");
+        var services = scop.ServiceProvider;
+        var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+        var logger = loggerFactory.CreateLogger("app");
+        try
+        {
+            var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+            await DefaultRoles.SeedAsync(unitOfWork);
+            await DefaultUsers.SeedBasicUserAsync(unitOfWork);
+            await DefaultUsers.SeedAdminUserAsync(unitOfWork);
+            await DefaultUsers.SeedSuperAdminUserAsync(unitOfWork);
+            logger.LogInformation("Finished Seeding Default Data");
+            logger.LogInformation("Application Starting");
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "An error occurred seeding the DB");
+        }
     }
-    catch (Exception ex)
-    {
-        logger.LogWarning(ex, "An error occurred seeding the DB");
-    }
+
 
 
 

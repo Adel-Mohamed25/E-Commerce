@@ -5,6 +5,7 @@ using Domain.Entities;
 using Infrastructure.UnitOfWorks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Models.Category;
 using Models.ResponseModels;
 
@@ -15,14 +16,17 @@ namespace Application.Features.V1.CategoryFeatures.Commands.CategoryCommandsHand
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<UpdateCategoryCommandHandler> _logger;
 
         public UpdateCategoryCommandHandler(IUnitOfWork unitOfWork,
             IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            ILogger<UpdateCategoryCommandHandler> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
         public async Task<Response<CategoryModel>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
@@ -50,8 +54,9 @@ namespace Application.Features.V1.CategoryFeatures.Commands.CategoryCommandsHand
                     return ResponseHandler.Success(data: request.CategoryModel);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "");
                 return ResponseHandler.Conflict(data: request.CategoryModel);
             }
 

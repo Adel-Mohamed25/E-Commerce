@@ -54,7 +54,7 @@ namespace Application.Features.V1.CategoryFeatures.Queries.CategoryQueriesHandle
                 if (result != null)
                     return ResponseHandler.Success(data: result, message: _stringLocalizer[SharedResourceKeys.SuccessMessage]);
                 _cache.SetData("Categories", data);
-                return ResponseHandler.Success(data);
+                return ResponseHandler.Success(data: data);
 
             }
             catch (Exception ex)

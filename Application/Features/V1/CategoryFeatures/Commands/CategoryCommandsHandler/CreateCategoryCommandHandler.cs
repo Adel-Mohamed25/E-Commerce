@@ -32,8 +32,8 @@ namespace Application.Features.V1.CategoryFeatures.Commands.CategoryCommandsHand
                 if (httpContext == null || httpContext.User.Identity?.IsAuthenticated == false)
                     return ResponseHandler.Unauthorized<CreateCategoryModel>(message: "Unauthorized request");
 
-                var data = _mapper.Map<Category>(request.CreateCategoryModel);
-                await _unitOfWork.Categories.CreateAsync(data, cancellationToken);
+                var category = _mapper.Map<Category>(request.CreateCategoryModel);
+                await _unitOfWork.Categories.CreateAsync(category, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 return ResponseHandler.Success(data: request.CreateCategoryModel);
             }

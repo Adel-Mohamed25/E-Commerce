@@ -4,6 +4,7 @@ namespace API.Hubs
 {
     public class NotificationHub : Hub
     {
+
         /// <summary>
         /// Sends a message to all connected clients.
         /// </summary>
