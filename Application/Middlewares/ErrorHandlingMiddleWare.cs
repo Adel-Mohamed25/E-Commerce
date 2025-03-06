@@ -27,6 +27,9 @@ namespace Application.Middlewares
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An unexpected error occurred while processing the request.Path: {Path}, Method: {Method}, QueryString: {QueryString}",
+                    context.Request.Path, context.Request.Method, context.Request.QueryString);
+
                 await HandleExceptionAsync(context, ex);
             }
         }
