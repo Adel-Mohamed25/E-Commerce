@@ -10,7 +10,7 @@ namespace API.Controllers.V1
     public class EmailController : BaseApiController
     {
         [HttpPost("SendEmail")]
-        public async Task<IActionResult> SendEmail([FromBody] SendEmailModel sendEmail)
+        public async Task<IActionResult> SendEmail(SendEmailModel sendEmail)
         {
             return NewResult(await Mediator.Send(new SendEmailCommand(sendEmail)));
         }
