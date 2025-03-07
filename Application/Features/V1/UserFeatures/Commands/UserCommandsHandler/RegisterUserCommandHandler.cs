@@ -62,6 +62,7 @@ namespace Application.Features.V1.UserFeatures.Commands.UserCommandsHandler
 
                 var user = _mapper.Map<User>(request.CreateUserModel);
                 user.UserName = request.CreateUserModel.Email;
+                user.Image = await _unitOfService.FileServices.UploadFile("Images", request.CreateUserModel.Image);
                 IdentityResult result = await _unitOfWork.Users.UserManager.CreateAsync(user, request.CreateUserModel.Password);
                 if (result.Succeeded)
                 {

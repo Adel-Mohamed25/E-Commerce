@@ -10,7 +10,7 @@ namespace Domain.Entities.Identity
         public string? LastName { get; set; }
         public string? Address { get; set; }
         public int? Age { get; set; }
-        public string? ProfilePictureUrl { get; set; }
+        public string? Image { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public GenderType Gender { get; set; }
         public DateTime? CreatedDate { get; set; }

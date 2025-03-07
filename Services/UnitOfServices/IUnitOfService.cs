@@ -1,4 +1,5 @@
 ﻿using Services.Abstractions;
+using Services.Abstractios;
 
 namespace Services.UnitOfServices
 {
@@ -6,5 +7,6 @@ namespace Services.UnitOfServices
     {
         IAuthServices AuthServices { get; }
         IEmailServices EmailServices { get; }
+        IFileServices FileServices { get; }
     }
 }

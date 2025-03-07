@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Services.Abstractions;
+using Services.Abstractios;
 using Services.Implementations;
 using Services.UnitOfServices;
 using System.Text;
@@ -98,7 +99,8 @@ namespace Services.Extensions
 
             services.AddScoped<IUnitOfService, UnitOfService>();
             services.AddScoped<IEmailServices, EmailServices>();
-            services.AddScoped<IAuthServices, AuthenticationService>();
+            services.AddScoped<IAuthServices, AuthService>();
+            services.AddScoped<IFileServices, FileServices>();
             services.AddHttpContextAccessor();
 
             return services;

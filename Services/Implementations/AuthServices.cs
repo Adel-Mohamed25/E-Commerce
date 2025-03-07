@@ -14,13 +14,13 @@ using System.Text;
 
 namespace Services.Implementations
 {
-    public class AuthenticationService : IAuthServices
+    public class AuthService : IAuthServices
     {
         private readonly JWTSettings _jWTSettings;
         private readonly IUnitOfWork _unitOfWork;
         private readonly GoogleSettings _googleSettings;
 
-        public AuthenticationService(IUnitOfWork unitOfWork, IOptions<JWTSettings> jWTSettings, IOptions<GoogleSettings> googleSettings)
+        public AuthService(IUnitOfWork unitOfWork, IOptions<JWTSettings> jWTSettings, IOptions<GoogleSettings> googleSettings)
         {
             _jWTSettings = jWTSettings.Value;
             _unitOfWork = unitOfWork;

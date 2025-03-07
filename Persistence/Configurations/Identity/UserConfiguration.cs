@@ -31,7 +31,7 @@ namespace Persistence.Configurations.Identity
             builder.Property(u => u.Age)
                 .IsRequired(false);
 
-            builder.Property(u => u.ProfilePictureUrl)
+            builder.Property(u => u.Image)
                 .HasMaxLength(200)
                 .IsRequired(false);
 

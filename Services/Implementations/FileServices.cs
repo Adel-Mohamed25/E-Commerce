@@ -54,7 +54,7 @@ namespace Services.Implementations
 
                     var request = _httpContextAccessor.HttpContext?.Request;
                     var baseUrl = request != null ? $"{request.Scheme}://{request.Host}" : "";
-                    var relativePath = $"{location}/{fileName}";
+                    var relativePath = $"/{location}/{fileName}";
                     var fullUrl = $"{baseUrl}{relativePath}";
                     return fullUrl;
                 }
